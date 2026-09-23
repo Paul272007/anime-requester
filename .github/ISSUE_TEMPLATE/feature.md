@@ -1,9 +1,9 @@
 ---
 name: Nouvelle fonctionnalité
 about: Proposer ou spécifier une nouvelle fonctionnalité
-title: "[FEAT] "
-labels: "enhancement"
-assignees: ""
+title: '[FEAT] '
+labels: 'enhancement'
+assignees: ''
 ---
 
 ### 🎯 Objectif / User Story

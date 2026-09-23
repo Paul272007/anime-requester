@@ -1,9 +1,9 @@
 ---
 name: Rapport de bug
 about: Signaler un dysfonctionnement ou une régression
-title: "[BUG] "
-labels: "bug"
-assignees: ""
+title: '[BUG] '
+labels: 'bug'
+assignees: ''
 ---
 
 ### 🐛 Description du bug

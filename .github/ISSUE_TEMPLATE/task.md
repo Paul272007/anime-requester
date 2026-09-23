@@ -1,9 +1,9 @@
 ---
 name: Tâche technique / Dette
 about: Tâche technique, refactoring, configuration, dépendances ou CI
-title: "[CHORE] "
-labels: "chore"
-assignees: ""
+title: '[CHORE] '
+labels: 'chore'
+assignees: ''
 ---
 
 ### 🛠 Description
