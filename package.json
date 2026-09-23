@@ -1,0 +1,28 @@
+{
+  "name": "anime-requester",
+  "version": "1.0.0",
+  "description": "Un site pour rechercher des animes",
+  "scripts": {
+    "dev": "echo \"Error: not specified\" && exit 1",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paul272007/anime-requester.git"
+  },
+  "keywords": [],
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Paul272007/anime-requester/issues"
+  },
+  "homepage": "https://github.com/Paul272007/anime-requester#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.9.9"
+  }
+}
