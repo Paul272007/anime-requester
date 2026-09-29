@@ -4,9 +4,6 @@ import { getApiKey } from './apiKeyStorage.js'
 const BASE_URL = 'https://anime-db.p.rapidapi.com'
 const API_HOST = 'anime-db.p.rapidapi.com'
 
-/**
- * Crée une instance Axios configurée avec la clé API courante[cite: 1, 2]
- */
 function createApiClient() {
   const apiKey = getApiKey()
   if (!apiKey) {
@@ -22,16 +19,6 @@ function createApiClient() {
   })
 }
 
-/**
- * Recherche des animes selon un terme et/ou des filtres[cite: 1, 2, 3]
- * @param {Object} params
- * @param {string} [params.search] - Terme de recherche[cite: 2]
- * @param {string} [params.genres] - Genres séparés par des virgules[cite: 2]
- * @param {number} [params.page=1][cite: 2]
- * @param {number} [params.size=10][cite: 2, 3]
- * @param {string} [params.sortBy='ranking'][cite: 2]
- * @param {string} [params.sortOrder='asc'][cite: 2]
- */
 export async function searchAnimes({
   search = '',
   genres = '',
