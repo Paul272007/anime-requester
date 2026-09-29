@@ -1,16 +1,16 @@
-import axios from 'axios';
-import { getApiKey } from './apiKeyStorage.js';
+import axios from 'axios'
+import { getApiKey } from './apiKeyStorage.js'
 
-const BASE_URL = 'https://anime-db.p.rapidapi.com';
-const API_HOST = 'anime-db.p.rapidapi.com';
+const BASE_URL = 'https://anime-db.p.rapidapi.com'
+const API_HOST = 'anime-db.p.rapidapi.com'
 
 /**
  * Crée une instance Axios configurée avec la clé API courante[cite: 1, 2]
  */
 function createApiClient() {
-  const apiKey = getApiKey();
+  const apiKey = getApiKey()
   if (!apiKey) {
-    throw new Error("Clé API manquante. Veuillez saisir votre clé RapidAPI.");
+    throw new Error('Clé API manquante. Veuillez saisir votre clé RapidAPI.')
   }
 
   return axios.create({
@@ -19,7 +19,7 @@ function createApiClient() {
       'x-rapidapi-host': API_HOST,
       'x-rapidapi-key': apiKey,
     },
-  });
+  })
 }
 
 /**
@@ -32,9 +32,16 @@ function createApiClient() {
  * @param {string} [params.sortBy='ranking'][cite: 2]
  * @param {string} [params.sortOrder='asc'][cite: 2]
  */
-export async function searchAnimes({ search = '', genres = '', page = 1, size = 10, sortBy = 'ranking', sortOrder = 'asc' } = {}) {
-  const client = createApiClient();
-  
+export async function searchAnimes({
+  search = '',
+  genres = '',
+  page = 1,
+  size = 10,
+  sortBy = 'ranking',
+  sortOrder = 'asc',
+} = {}) {
+  const client = createApiClient()
+
   const response = await client.get('/anime', {
     params: {
       search,
@@ -44,7 +51,7 @@ export async function searchAnimes({ search = '', genres = '', page = 1, size = 
       sortBy,
       sortOrder,
     },
-  });
+  })
 
-  return response.data;
+  return response.data
 }
