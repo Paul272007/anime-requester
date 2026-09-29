@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anime Requester</title>
+    <script defer src="./js/searchController.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Anime requester</h1>
+    </header>
+    <main>
+      <form class="search-form" id="search-form" method="get" action="">
+        <div class="form-group">
+          <label for="search-type">Choisissez un type de recherche : </label>
+          <select name="type" id="search-type">
+            <option value="titre">Recherche par titre</option>
+            <option value="auteur">Recherche par auteur</option>
+            <option value="annee">Recherche par année de sortie</option>
+            <option value="genre">Recherche par genre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="parametre">Paramètre :</label>
+          <input id="parametre" type="search" name="parametre" value="" />
+        </div>
+
+        <div class="form-action">
+          <button type="submit">Rechercher</button>
+          <button type="reset">Effacer</button>
+        </div>
+      </form>
+      <section
+        class="result-container"
+        id="result-container"
+        aria-live="polite"
+      ></section>
+    </main>
+
+    <footer>
+      <p>Copyright (c) 2026 neuille.com . All Rights Reserved.</p>
+      <p>License: MIT License</p>
+    </footer>
+  </body>
+</html>
