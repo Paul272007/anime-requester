@@ -1,0 +1,65 @@
+:root {
+  --color-primary: #1a1a2e;
+  --color-primary-hover: #2e2e50;
+  --color-bg: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-border: #dddddd;
+  --color-text: #222222;
+  --color-text-muted: #555555;
+
+  --color-btn-reset-bg: #e0e0e0;
+  --color-btn-reset-text: #333333;
+  --color-btn-reset-hover: #c8c8c8;
+
+  --color-header-bg: var(--color-primary);
+  --color-header-text: #ffffff;
+  --color-footer-bg: var(--color-primary);
+  --color-footer-text: #aaaaaa;
+
+  --color-warn-bg: #fff3cd;
+  --color-warn-border: #ffc107;
+  --color-error-bg: #fce4e4;
+  --color-error-border: #e57373;
+  --color-error-text: #b71c1c;
+
+  --color-input-bg: #fafafa;
+  --color-input-border: #bbbbbb;
+  --color-focus-outline: var(--color-primary);
+
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  --font-base: Arial, Helvetica, sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 0.85rem;
+  --font-size-card: 0.95rem;
+  --font-size-meta: 0.8rem;
+
+  --border-radius: 4px;
+}
+
+/* Thème sombre : activé si la préférence système est "dark" */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #121212;
+    --color-surface: #1e1e1e;
+    --color-border: #333333;
+    --color-text: #e0e0e0;
+    --color-text-muted: #aaaaaa;
+
+    --color-btn-reset-bg: #333333;
+    --color-btn-reset-text: #e0e0e0;
+    --color-btn-reset-hover: #444444;
+
+    --color-input-bg: #2a2a2a;
+    --color-input-border: #444444;
+
+    --color-warn-bg: #3a3000;
+    --color-warn-border: #a07800;
+    --color-error-bg: #3a0000;
+    --color-error-border: #c62828;
+    --color-error-text: #ef9a9a;
+  }
+}
