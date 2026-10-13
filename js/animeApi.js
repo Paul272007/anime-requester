@@ -42,3 +42,37 @@ export async function searchAnimes({
 
   return response.data
 }
+
+export async function getAnimeById(id) {
+  if (!id) {
+    throw new Error('Veuillez renseigner un identifiant.')
+  }
+  const client = createApiClient()
+  const response = await client.get(`/anime/${id}`)
+  return response.data
+}
+
+export async function getAnimeByRanking(ranking) {
+  const rankNumber = parseInt(ranking, 10)
+  if (isNaN(rankNumber) || rankNumber < 1) {
+    throw new Error(
+      'Veuillez renseigner un classement valide (nombre supérieur ou égal à 1).',
+    )
+  }
+  const client = createApiClient()
+  const response = await client.get('/anime', {
+    params: {
+      page: rankNumber,
+      size: 1,
+      sortBy: 'ranking',
+      sortOrder: 'asc',
+    },
+  })
+  return response.data
+}
+
+export const animeService = {
+  searchAnimes,
+  getAnimeById,
+  getAnimeByRanking,
+}
