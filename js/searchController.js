@@ -144,14 +144,8 @@ export function initFormEvents({
   })
 
   form.addEventListener('reset', () => {
-    clearResults(resultContainer)
-    const response = await handleSearch(searchTerm, genres)
-    console.log('Résultats de la recherche :', response)
-  })
-
-  form.addEventListener('reset', () => {
     if (resultContainer) {
-      resultContainer.innerHTML = ''
+      clearResults(resultContainer)
     }
   })
 
@@ -175,4 +169,3 @@ if (typeof document !== 'undefined') {
     initFormEvents()
   }
 }
-document.addEventListener('DOMContentLoaded', initFormEvents)
