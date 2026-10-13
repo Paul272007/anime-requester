@@ -1,14 +1,79 @@
-import { searchAnimes } from './animeApi.js'
+import {
+  animeService as defaultAnimeService,
+  searchAnimes,
+  getAnimeById,
+  getAnimeByRanking,
+} from './animeApi.js'
+import {
+  renderAnimeCards,
+  renderErrorMessage,
+  renderLoadingMessage,
+  clearResults,
+  resetSearchUI,
+} from './cardRenderer.js'
 
-export async function handleSearch(searchTerm, genres = '') {
+export async function handleSearch(
+  searchTerm,
+  genresOrOptions = '',
+  searchType = 'titre',
+  api = defaultAnimeService,
+) {
+  let search
+  let genres
+  let type
+
+  if (typeof searchTerm === 'object' && searchTerm !== null) {
+    search = searchTerm.search || searchTerm.term || ''
+    genres = searchTerm.genres || ''
+    type = searchTerm.type || 'titre'
+  } else if (typeof genresOrOptions === 'object' && genresOrOptions !== null) {
+    search = searchTerm || ''
+    genres = genresOrOptions.genres || ''
+    type = genresOrOptions.type || searchType || 'titre'
+  } else {
+    search = searchTerm || ''
+    genres = genresOrOptions || ''
+    type = searchType || 'titre'
+  }
+
+  const normalizedType = String(type).toLowerCase().trim()
+  const searchFn = api.searchAnimes || searchAnimes
+  const getByIdFn = api.getAnimeById || getAnimeById
+  const getByRankingFn = api.getAnimeByRanking || getAnimeByRanking
+
   try {
-    const data = await searchAnimes({
-      search: searchTerm,
-      genres: genres,
-      size: 10,
-    })
+    let data
+    if (normalizedType === 'id' || normalizedType === 'identifiant') {
+      data = await getByIdFn(search)
+    } else if (
+      normalizedType === 'classement' ||
+      normalizedType === 'ranking'
+    ) {
+      data = await getByRankingFn(search)
+    } else if (normalizedType === 'genre') {
+      data = await searchFn({
+        genres: search || genres,
+        size: 10,
+      })
+    } else {
+      data = await searchFn({
+        search,
+        genres,
+        size: 10,
+      })
+    }
 
-    return { success: true, results: data.data || data }
+    const rawResults = data?.data !== undefined ? data.data : data
+    const results = Array.isArray(rawResults)
+      ? rawResults
+      : rawResults
+        ? [rawResults]
+        : []
+
+    return {
+      success: true,
+      results,
+    }
   } catch (error) {
     return {
       success: false,
@@ -20,58 +85,85 @@ export async function handleSearch(searchTerm, genres = '') {
   }
 }
 
-// --- Ajout pour la gestion des événements du formulaire ---
+export function initFormEvents({
+  formSelector = '#search-form',
+  containerSelector = '#result-container',
+  api = defaultAnimeService,
+} = {}) {
+  if (typeof document === 'undefined') return null
 
-export function initFormEvents() {
-  const form = document.querySelector('form')
-  // a modifier si besoin selon les id du fichier html Nathan
+  const form =
+    document.querySelector(formSelector) || document.querySelector('form')
   const resultContainer =
+    document.querySelector(containerSelector) ||
+    document.querySelector('.result-container') ||
     document.querySelector('#results') ||
     document.querySelector('.results-container')
 
-  if (!form) return
+  if (!form) return null
 
-  // 1. Intercepter la soumission du bouton de recherche
   form.addEventListener('submit', async (event) => {
-    // Sans rechargement de la page
     event.preventDefault()
 
-    // 2. Récupérer les valeurs saisies (type de recherche et paramètre)
-    // On utilise form.elements ou querySelector pour récupérer les inputs
     const typeSelect =
-      form.querySelector('[name="type"]') || document.querySelector('#type')
+      form.querySelector('[name="type"]') ||
+      document.querySelector('#search-type') ||
+      document.querySelector('#type')
     const paramInput =
       form.querySelector('[name="parametre"]') ||
+      document.querySelector('#parametre') ||
       document.querySelector('input[type="search"]')
 
-    const searchType = typeSelect ? typeSelect.value : ''
-    const searchParam = paramInput ? paramInput.value : ''
+    const searchType = typeSelect ? typeSelect.value : 'titre'
+    const searchParam = paramInput ? paramInput.value.trim() : ''
 
-    let searchTerm = ''
-    let genres = ''
-
-    if (searchType === 'titre') {
-      searchTerm = searchParam
-    } else if (searchType === 'genre') {
-      genres = searchParam
-    } else {
-      searchTerm = searchParam
+    if (!searchParam) {
+      if (resultContainer) {
+        renderErrorMessage(
+          resultContainer,
+          'Veuillez renseigner un paramètre de recherche.',
+        )
+      }
+      return
     }
 
-    // Transmettre les valeurs au module API via handleSearch
-    const response = await handleSearch(searchTerm, genres)
-    console.log('Résultats de la recherche :', response)
-  })
-
-  // 3. Intercepter le clic sur le bouton de réinitialisation
-  // L'événement 'reset' se déclenche quand on clique sur un <button type="reset">
-  form.addEventListener('reset', () => {
-    // 4. Vider le conteneur HTML des cartes de résultats
     if (resultContainer) {
-      resultContainer.innerHTML = ''
+      renderLoadingMessage(resultContainer, 'Recherche en cours...')
     }
+
+    const response = await handleSearch(searchParam, '', searchType, api)
+
+    if (!resultContainer) return
+
+    if (!response.success) {
+      renderErrorMessage(resultContainer, response.error)
+      return
+    }
+
+    renderAnimeCards(response.results, resultContainer, searchType)
   })
+
+  form.addEventListener('reset', () => {
+    clearResults(resultContainer)
+  })
+
+  const resetBtn = form.querySelector('button[type="reset"]')
+  if (resetBtn) {
+    resetBtn.addEventListener('click', (event) => {
+      event.preventDefault()
+      resetSearchUI(form, resultContainer)
+    })
+  }
+
+  return { form, resultContainer }
 }
 
-// Activer les événements une fois que la page est chargée
-document.addEventListener('DOMContentLoaded', initFormEvents)
+export { resetSearchUI }
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initFormEvents())
+  } else {
+    initFormEvents()
+  }
+}

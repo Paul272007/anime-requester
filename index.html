@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anime Requester</title>
-    <script defer src="./js/searchController.js"></script>
+    <script type="module" src="./js/searchController.js"></script>
   </head>
   <body>
     <header>
@@ -16,9 +16,11 @@
           <label for="search-type">Choisissez un type de recherche : </label>
           <select name="type" id="search-type">
             <option value="titre">Recherche par titre</option>
+            <option value="id">Recherche par identifiant</option>
+            <option value="classement">Recherche par classement</option>
+            <option value="genre">Recherche par genre</option>
             <option value="auteur">Recherche par auteur</option>
             <option value="annee">Recherche par année de sortie</option>
-            <option value="genre">Recherche par genre</option>
           </select>
         </div>
         <div class="form-group">
