@@ -4,6 +4,7 @@ import {
   getAnimeById,
   getAnimeByRanking,
 } from './animeApi.js'
+import { setApiKey } from './apiKeyStorage.js'
 import {
   renderAnimeCards,
   renderErrorMessage,
@@ -105,6 +106,12 @@ export function initFormEvents({
   form.addEventListener('submit', async (event) => {
     event.preventDefault()
 
+    // Récupérer et stocker la clé API
+    const apiKeyInput = document.querySelector('#api-key')
+    if (apiKeyInput && apiKeyInput.value.trim()) {
+      setApiKey(apiKeyInput.value.trim())
+    }
+
     const typeSelect =
       form.querySelector('[name="type"]') ||
       document.querySelector('#search-type') ||
@@ -151,8 +158,7 @@ export function initFormEvents({
 
   const resetBtn = form.querySelector('button[type="reset"]')
   if (resetBtn) {
-    resetBtn.addEventListener('click', (event) => {
-      event.preventDefault()
+    resetBtn.addEventListener('click', () => {
       resetSearchUI(form, resultContainer)
     })
   }
