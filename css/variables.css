@@ -37,6 +37,15 @@
   --font-size-card: 0.95rem;
   --font-size-meta: 0.8rem;
 
+  --color-badge-bg: #eef2f7;
+  --color-badge-text: #1a1a2e;
+  --color-focus-ring: rgba(26, 26, 46, 0.15);
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  --transition-fast: 0.2s ease;
+
   --border-radius: 4px;
 }
 
@@ -55,6 +64,14 @@
 
     --color-input-bg: #2a2a2a;
     --color-input-border: #444444;
+    --color-focus-outline: #6c8cff;
+    --color-focus-ring: rgba(108, 140, 255, 0.25);
+
+    --color-badge-bg: #2a2d3d;
+    --color-badge-text: #e0e0e0;
+
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
 
     --color-warn-bg: #3a3000;
     --color-warn-border: #a07800;
