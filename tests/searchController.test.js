@@ -92,6 +92,21 @@ describe('searchController', () => {
       assert.strictEqual(response.results[0].title, 'FMA Brotherhood')
     })
 
+    it('doit rechercher les œuvres associées pour un auteur', async () => {
+      let calledWith = null
+      const mockApi = {
+        searchAnimes: async (params) => {
+          calledWith = params
+          return { data: [{ title: 'One Piece', id: '1' }] }
+        },
+      }
+
+      const response = await handleSearch('Oda', '', 'auteur', mockApi)
+      assert.strictEqual(response.success, true)
+      assert.strictEqual(calledWith.search, 'One Piece')
+      assert.strictEqual(response.results[0].title, 'One Piece')
+    })
+
     it('doit gérer les erreurs API gracieusement', async () => {
       const mockApi = {
         searchAnimes: async () => {

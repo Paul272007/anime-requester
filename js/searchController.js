@@ -12,6 +12,7 @@ import {
   clearResults,
   resetSearchUI,
 } from './cardRenderer.js'
+import { searchByAuthor } from './authorSearch.js'
 
 export async function handleSearch(
   searchTerm,
@@ -56,6 +57,8 @@ export async function handleSearch(
         genres: search || genres,
         size: 10,
       })
+    } else if (normalizedType === 'auteur' || normalizedType === 'author') {
+      data = await searchByAuthor(search, searchFn)
     } else {
       data = await searchFn({
         search,
