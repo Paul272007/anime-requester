@@ -4,7 +4,7 @@ import {
   getAnimeById,
   getAnimeByRanking,
 } from './animeApi.js'
-import { setApiKey } from './apiKeyStorage.js'
+import { setApiKey, clearApiKey } from './apiKeyStorage.js'
 import {
   renderAnimeCards,
   renderErrorMessage,
@@ -103,13 +103,40 @@ export function initFormEvents({
 
   if (!form) return null
 
+  // Récupérer et configurer le champ de clé API s'il existe
+  const apiKeyInput = document.querySelector('#api-key')
+  const toggleApiKeyBtn = document.querySelector('#toggle-api-key')
+
+  if (apiKeyInput) {
+    const storedKey = sessionStorage.getItem('rapidapi_key')
+    if (storedKey) {
+      apiKeyInput.value = storedKey
+    }
+
+    if (toggleApiKeyBtn) {
+      toggleApiKeyBtn.addEventListener('click', () => {
+        const isPassword = apiKeyInput.type === 'password'
+        apiKeyInput.type = isPassword ? 'text' : 'password'
+        toggleApiKeyBtn.setAttribute(
+          'aria-label',
+          isPassword ? 'Masquer la clé API' : 'Afficher la clé API',
+        )
+        toggleApiKeyBtn.textContent = isPassword ? '🙈' : '👁'
+      })
+    }
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault()
 
-    // Récupérer et stocker la clé API
-    const apiKeyInput = document.querySelector('#api-key')
-    if (apiKeyInput && apiKeyInput.value.trim()) {
-      setApiKey(apiKeyInput.value.trim())
+    // Récupérer et stocker la clé API personnalisée si saisie
+    if (apiKeyInput) {
+      const trimmedKey = apiKeyInput.value.trim()
+      if (trimmedKey) {
+        setApiKey(trimmedKey)
+      } else {
+        clearApiKey()
+      }
     }
 
     const typeSelect =

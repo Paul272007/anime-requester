@@ -7,7 +7,9 @@ const API_HOST = 'anime-db.p.rapidapi.com'
 function createApiClient() {
   const apiKey = getApiKey()
   if (!apiKey) {
-    throw new Error('Clé API manquante. Veuillez saisir votre clé RapidAPI.')
+    throw new Error(
+      'Clé API manquante. Veuillez renseigner votre clé RapidAPI ou configurer une clé par défaut.',
+    )
   }
 
   return axios.create({
