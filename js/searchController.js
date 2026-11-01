@@ -59,6 +59,27 @@ export async function handleSearch(
       })
     } else if (normalizedType === 'auteur' || normalizedType === 'author') {
       data = await searchByAuthor(search, searchFn)
+    } else if (
+      normalizedType === 'annee' ||
+      normalizedType === 'année' ||
+      normalizedType === 'year'
+    ) {
+      const yearStr = String(search).trim()
+      const yearNumber = parseInt(yearStr, 10)
+      if (
+        !/^\d{4}$/.test(yearStr) ||
+        isNaN(yearNumber) ||
+        yearNumber < 1900 ||
+        yearNumber > 2100
+      ) {
+        throw new Error(
+          'Veuillez renseigner une année valide (ex. entre 1900 et 2100).',
+        )
+      }
+      data = await searchFn({
+        year: yearNumber,
+        size: 10,
+      })
     } else {
       data = await searchFn({
         search,

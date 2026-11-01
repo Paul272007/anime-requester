@@ -20,6 +20,8 @@ describe('searchController', () => {
               <option value="id">Recherche par identifiant</option>
               <option value="classement">Recherche par classement</option>
               <option value="genre">Recherche par genre</option>
+              <option value="auteur">Recherche par auteur</option>
+              <option value="annee">Recherche par année de sortie</option>
             </select>
             <input id="parametre" name="parametre" type="search" value="" />
             <button type="submit">Rechercher</button>
@@ -105,6 +107,31 @@ describe('searchController', () => {
       assert.strictEqual(response.success, true)
       assert.strictEqual(calledWith.search, 'One Piece')
       assert.strictEqual(response.results[0].title, 'One Piece')
+    })
+
+    it('doit appeler searchAnimes avec le filtre year pour une recherche par année', async () => {
+      let calledWith = null
+      const mockApi = {
+        searchAnimes: async (params) => {
+          calledWith = params
+          return { data: [{ title: 'Sousou no Frieren', year: 2023 }] }
+        },
+      }
+
+      const response = await handleSearch('2023', '', 'annee', mockApi)
+      assert.strictEqual(response.success, true)
+      assert.deepStrictEqual(calledWith, {
+        year: 2023,
+        size: 10,
+      })
+      assert.strictEqual(response.results.length, 1)
+      assert.strictEqual(response.results[0].title, 'Sousou no Frieren')
+    })
+
+    it('doit renvoyer une erreur si l’année saisie est invalide', async () => {
+      const response = await handleSearch('abcd', '', 'annee', {})
+      assert.strictEqual(response.success, false)
+      assert.ok(response.error.includes('année valide'))
     })
 
     it('doit gérer les erreurs API gracieusement', async () => {
