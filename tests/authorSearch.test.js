@@ -24,10 +24,21 @@ describe('authorSearch', () => {
         'Bleach',
         'Burn the Witch',
       ])
+      assert.deepStrictEqual(
+        getWorksByAuthor('Urasawa'),
+        getWorksByAuthor('Naoki Urasawa'),
+      )
+      assert.deepStrictEqual(
+        getWorksByAuthor('Kon'),
+        getWorksByAuthor('Satoshi Kon'),
+      )
     })
 
-    it('doit renvoyer null si l’auteur n’est pas répertorié ou entrée invalide', () => {
+    it('doit renvoyer null si l’auteur n’est pas répertorié, trop court ou invalide', () => {
       assert.strictEqual(getWorksByAuthor('InconnuTotal999'), null)
+      assert.strictEqual(getWorksByAuthor('a'), null)
+      assert.strictEqual(getWorksByAuthor('o'), null)
+      assert.strictEqual(getWorksByAuthor('on'), null)
       assert.strictEqual(getWorksByAuthor(''), null)
       assert.strictEqual(getWorksByAuthor(null), null)
     })
