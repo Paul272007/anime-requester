@@ -216,9 +216,31 @@ export function normalizeAnime(item) {
 }
 
 function createApiClient() {
-  return axios.create({
+  const client = axios.create({
     baseURL: BASE_URL,
   })
+
+  client.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const config = error.config
+      if (error.response?.status === 429 && config) {
+        config.__retryCount = (config.__retryCount || 0) + 1
+        if (config.__retryCount <= 2) {
+          const retryAfter = Number(error.response.headers?.['retry-after'])
+          const delayMs =
+            !isNaN(retryAfter) && retryAfter > 0
+              ? Math.min(retryAfter, 3) * 1000
+              : 1000
+          await new Promise((resolve) => setTimeout(resolve, delayMs))
+          return client(config)
+        }
+      }
+      return Promise.reject(error)
+    },
+  )
+
+  return client
 }
 
 export async function searchAnimes({
