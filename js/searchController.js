@@ -134,6 +134,7 @@ export function initFormEvents({
   if (apiKeyInput) {
     const storedKey = sessionStorage.getItem('rapidapi_key')
     if (storedKey) {
+      apiKeyInput.defaultValue = storedKey
       apiKeyInput.value = storedKey
     }
 
@@ -158,8 +159,10 @@ export function initFormEvents({
       const trimmedKey = apiKeyInput.value.trim()
       if (trimmedKey) {
         setApiKey(trimmedKey)
+        apiKeyInput.defaultValue = trimmedKey
       } else {
         clearApiKey()
+        apiKeyInput.defaultValue = ''
       }
     }
 
@@ -205,11 +208,17 @@ export function initFormEvents({
     if (resultContainer) {
       clearResults(resultContainer)
     }
+    if (apiKeyInput) {
+      const storedKey = sessionStorage.getItem('rapidapi_key') || ''
+      apiKeyInput.defaultValue = storedKey
+      apiKeyInput.value = storedKey
+    }
   })
 
   const resetBtn = form.querySelector('button[type="reset"]')
   if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
+    resetBtn.addEventListener('click', (event) => {
+      event.preventDefault()
       resetSearchUI(form, resultContainer)
     })
   }

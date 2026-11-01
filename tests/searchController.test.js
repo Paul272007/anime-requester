@@ -10,11 +10,13 @@ describe('searchController', () => {
   let container
 
   beforeEach(() => {
-    dom = new JSDOM(`
+    dom = new JSDOM(
+      `
       <!doctype html>
       <html>
         <body>
           <form id="search-form">
+            <input id="api-key" name="api-key" type="password" value="" />
             <select name="type" id="search-type">
               <option value="titre">Recherche par titre</option>
               <option value="id">Recherche par identifiant</option>
@@ -30,12 +32,16 @@ describe('searchController', () => {
           <section id="result-container" class="result-container"></section>
         </body>
       </html>
-    `)
+    `,
+      { url: 'http://localhost' },
+    )
 
     testDocument = dom.window.document
     global.window = dom.window
     global.document = testDocument
+    global.sessionStorage = dom.window.sessionStorage
     global.HTMLElement = dom.window.HTMLElement
+    sessionStorage.clear()
 
     form = testDocument.getElementById('search-form')
     container = testDocument.getElementById('result-container')
@@ -215,7 +221,8 @@ describe('searchController', () => {
       assert.strictEqual(container.innerHTML, '')
     })
 
-    it('doit vider le conteneur lors du clic sur le bouton de réinitialisation', () => {
+    it('doit vider le conteneur et préserver la clé API lors du clic sur le bouton de réinitialisation', () => {
+      sessionStorage.setItem('rapidapi_key', 'ma-cle-perso')
       container.innerHTML = '<div class="anime-card">Carte test</div>'
 
       initFormEvents({
@@ -223,11 +230,17 @@ describe('searchController', () => {
         containerSelector: '#result-container',
       })
 
+      const apiKeyInput = form.querySelector('#api-key')
+      const paramInput = form.querySelector('#parametre')
+      paramInput.value = 'Naruto'
+
       const resetBtn = form.querySelector('button[type="reset"]')
       const clickEvent = new dom.window.Event('click', { cancelable: true })
       resetBtn.dispatchEvent(clickEvent)
 
       assert.strictEqual(container.innerHTML, '')
+      assert.strictEqual(paramInput.value, '')
+      assert.strictEqual(apiKeyInput.value, 'ma-cle-perso')
     })
   })
 })
