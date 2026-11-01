@@ -12,6 +12,7 @@ import {
   clearResults,
   resetSearchUI,
 } from './cardRenderer.js'
+import { searchByAuthor } from './authorSearch.js'
 
 export async function handleSearch(
   searchTerm,
@@ -54,6 +55,29 @@ export async function handleSearch(
     } else if (normalizedType === 'genre') {
       data = await searchFn({
         genres: search || genres,
+        size: 10,
+      })
+    } else if (normalizedType === 'auteur' || normalizedType === 'author') {
+      data = await searchByAuthor(search, searchFn)
+    } else if (
+      normalizedType === 'annee' ||
+      normalizedType === 'année' ||
+      normalizedType === 'year'
+    ) {
+      const yearStr = String(search).trim()
+      const yearNumber = parseInt(yearStr, 10)
+      if (
+        !/^\d{4}$/.test(yearStr) ||
+        isNaN(yearNumber) ||
+        yearNumber < 1900 ||
+        yearNumber > 2100
+      ) {
+        throw new Error(
+          'Veuillez renseigner une année valide (ex. entre 1900 et 2100).',
+        )
+      }
+      data = await searchFn({
+        year: yearNumber,
         size: 10,
       })
     } else {
@@ -110,6 +134,7 @@ export function initFormEvents({
   if (apiKeyInput) {
     const storedKey = sessionStorage.getItem('rapidapi_key')
     if (storedKey) {
+      apiKeyInput.defaultValue = storedKey
       apiKeyInput.value = storedKey
     }
 
@@ -134,8 +159,10 @@ export function initFormEvents({
       const trimmedKey = apiKeyInput.value.trim()
       if (trimmedKey) {
         setApiKey(trimmedKey)
+        apiKeyInput.defaultValue = trimmedKey
       } else {
         clearApiKey()
+        apiKeyInput.defaultValue = ''
       }
     }
 
@@ -181,11 +208,17 @@ export function initFormEvents({
     if (resultContainer) {
       clearResults(resultContainer)
     }
+    if (apiKeyInput) {
+      const storedKey = sessionStorage.getItem('rapidapi_key') || ''
+      apiKeyInput.defaultValue = storedKey
+      apiKeyInput.value = storedKey
+    }
   })
 
   const resetBtn = form.querySelector('button[type="reset"]')
   if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
+    resetBtn.addEventListener('click', (event) => {
+      event.preventDefault()
       resetSearchUI(form, resultContainer)
     })
   }

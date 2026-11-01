@@ -65,7 +65,6 @@ main {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 620px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
@@ -87,6 +86,13 @@ main {
   color: var(--color-text);
   cursor: pointer;
   transition: color var(--transition-fast);
+}
+
+.form-control-wrapper {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group select,
@@ -121,6 +127,7 @@ main {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .input-password-wrapper input {
@@ -161,6 +168,7 @@ main {
   margin-top: 0.35rem;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  line-height: 1.4;
 }
 
 /* Actions du formulaire (Boutons) */
@@ -480,15 +488,21 @@ footer {
 
 /* Écrans intermédiaires / tablettes */
 @media (min-width: 640px) {
-  .search-form {
-    max-width: 680px;
-  }
-
   .form-group {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-md);
+  }
+
+  .form-group:has(.form-help),
+  .form-group.has-help {
+    align-items: flex-start;
+  }
+
+  .form-group:has(.form-help) label,
+  .form-group.has-help label {
+    padding-top: 0.65rem;
   }
 
   .form-group label {
@@ -499,12 +513,9 @@ footer {
 
   .form-group select,
   .form-group input,
+  .form-control-wrapper,
   .input-password-wrapper {
     flex: 1;
-    width: 100%;
-  }
-
-  .form-help {
     width: 100%;
   }
 
