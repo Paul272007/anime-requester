@@ -14,7 +14,14 @@ export function createAnimeCard(anime = {}) {
   imageContainer.className = 'anime-image-container'
   const img = document.createElement('img')
   img.className = 'anime-image'
-  const rawImage = anime.image || anime.thumbnail || anime.thumb
+  const rawImage =
+    anime.image ||
+    anime.images?.jpg?.large_image_url ||
+    anime.images?.jpg?.image_url ||
+    anime.images?.webp?.large_image_url ||
+    anime.images?.webp?.image_url ||
+    anime.thumbnail ||
+    anime.thumb
   img.src = rawImage || PLACEHOLDER_IMAGE
   img.alt = anime.title ? `Affiche de ${anime.title}` : 'Affiche anime'
   img.loading = 'lazy'
@@ -41,7 +48,11 @@ export function createAnimeCard(anime = {}) {
   genresLabel.textContent = 'Genres : '
   const genresText = document.createElement('span')
   if (Array.isArray(anime.genres) && anime.genres.length > 0) {
-    genresText.textContent = anime.genres.join(', ')
+    const formattedGenres = anime.genres
+      .map((g) => (typeof g === 'object' && g !== null ? g.name : g))
+      .filter(Boolean)
+    genresText.textContent =
+      formattedGenres.length > 0 ? formattedGenres.join(', ') : 'N/A'
   } else if (
     typeof anime.genres === 'string' &&
     anime.genres.trim().length > 0
