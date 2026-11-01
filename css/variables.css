@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-theme='light'] {
   --color-primary: #1a1a2e;
   --color-primary-hover: #2e2e50;
   --color-bg: #f5f5f5;
@@ -49,9 +50,38 @@
   --border-radius: 4px;
 }
 
+:root[data-theme='dark'] {
+  --color-bg: #121212;
+  --color-surface: #1e1e1e;
+  --color-border: #333333;
+  --color-text: #e0e0e0;
+  --color-text-muted: #aaaaaa;
+
+  --color-btn-reset-bg: #333333;
+  --color-btn-reset-text: #e0e0e0;
+  --color-btn-reset-hover: #444444;
+
+  --color-input-bg: #2a2a2a;
+  --color-input-border: #444444;
+  --color-focus-outline: #6c8cff;
+  --color-focus-ring: rgba(108, 140, 255, 0.25);
+
+  --color-badge-bg: #2a2d3d;
+  --color-badge-text: #e0e0e0;
+
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+  --color-warn-bg: #3a3000;
+  --color-warn-border: #a07800;
+  --color-error-bg: #3a0000;
+  --color-error-border: #c62828;
+  --color-error-text: #ef9a9a;
+}
+
 /* Thème sombre : activé si la préférence système est "dark" */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --color-bg: #121212;
     --color-surface: #1e1e1e;
     --color-border: #333333;

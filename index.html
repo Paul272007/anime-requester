@@ -12,15 +12,25 @@
         }
       }
     </script>
-    <script defer type="module" src="./js/searchController.js"></script>
+    <script type="module" src="./js/searchController.js"></script>
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
     <header>
       <h1>Anime requester</h1>
+      <button
+        type="button"
+        id="theme-toggle"
+        class="btn-theme-toggle"
+        aria-label="Activer le thème sombre"
+        aria-pressed="false"
+        title="Basculer entre le thème clair et sombre"
+      >
+        🌙
+      </button>
     </header>
     <main>
-      <form class="search-form" id="search-form" method="get" action="">
+      <form class="search-form" id="search-form" method="get">
         <div class="form-group has-help">
           <label for="api-key">Clé RapidAPI (optionnelle) :</label>
           <div class="form-control-wrapper">
@@ -38,6 +48,7 @@
                 id="toggle-api-key"
                 class="btn-toggle-password"
                 aria-label="Afficher ou masquer la clé API"
+                aria-pressed="false"
                 title="Afficher ou masquer la clé API"
               >
                 👁
@@ -64,6 +75,59 @@
           <label for="parametre">Paramètre :</label>
           <input id="parametre" type="search" name="parametre" value="" />
         </div>
+        <fieldset class="form-group genre-fieldset" id="genre-fieldset">
+          <legend class="genre-legend">Genres (optionnel) :</legend>
+          <div class="genre-options">
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Action" />
+              <span>Action</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Adventure" />
+              <span>Aventure</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Comedy" />
+              <span>Comédie</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Drama" />
+              <span>Drame</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Fantasy" />
+              <span>Fantaisie</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Horror" />
+              <span>Horreur</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Mystery" />
+              <span>Mystère</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Romance" />
+              <span>Romance</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Sci-Fi" />
+              <span>Sci-Fi</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Slice of Life" />
+              <span>Tranche de vie</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Sports" />
+              <span>Sports</span>
+            </label>
+            <label class="genre-option">
+              <input type="checkbox" name="genres" value="Supernatural" />
+              <span>Surnaturel</span>
+            </label>
+          </div>
+        </fieldset>
 
         <div class="form-action">
           <button type="submit">Rechercher</button>
@@ -74,6 +138,8 @@
         class="result-container"
         id="result-container"
         aria-live="polite"
+        aria-busy="false"
+        aria-label="Résultats de recherche"
       ></section>
     </main>
 

@@ -28,11 +28,15 @@ body {
    ========================================================================== */
 
 header {
+  position: relative;
   background-color: var(--color-header-bg);
   color: var(--color-header-text);
   padding: var(--spacing-md) var(--spacing-xl);
   text-align: center;
   box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 header h1 {
@@ -40,6 +44,34 @@ header h1 {
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-weight: 700;
+}
+
+.btn-theme-toggle {
+  position: absolute;
+  right: var(--spacing-xl);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--border-radius);
+  color: var(--color-header-text);
+  cursor: pointer;
+  font-size: 1.15rem;
+  padding: 0.35rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.btn-theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-theme-toggle:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
@@ -96,7 +128,7 @@ main {
 }
 
 .form-group select,
-.form-group input {
+.form-group input:not([type='checkbox']) {
   width: 100%;
   padding: 0.65rem 0.85rem;
   font-family: inherit;
@@ -112,15 +144,56 @@ main {
 }
 
 .form-group select:hover,
-.form-group input:hover {
+.form-group input:not([type='checkbox']):hover {
   border-color: var(--color-primary-hover);
 }
 
 .form-group select:focus,
-.form-group input:focus {
+.form-group select:focus-visible,
+.form-group input:not([type='checkbox']):focus,
+.form-group input:not([type='checkbox']):focus-visible {
   outline: none;
   border-color: var(--color-focus-outline);
   box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.genre-fieldset {
+  border: none;
+  padding: 0;
+}
+
+.genre-legend {
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.35rem;
+}
+
+.genre-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  flex: 1;
+}
+
+.form-group .genre-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: auto;
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+.genre-option input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.genre-option input[type='checkbox']:focus-visible {
+  outline: 2px solid var(--color-focus-outline);
+  outline-offset: 2px;
 }
 
 .input-password-wrapper {
@@ -155,6 +228,11 @@ main {
 .btn-toggle-password:hover {
   color: var(--color-text);
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-toggle-password:focus-visible {
+  outline: 2px solid var(--color-focus-outline);
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -505,14 +583,15 @@ footer {
     padding-top: 0.65rem;
   }
 
-  .form-group label {
+  .form-group > label,
+  .genre-legend {
     flex: 0 0 auto;
     width: 270px;
     margin-bottom: 0;
   }
 
   .form-group select,
-  .form-group input,
+  .form-group input:not([type='checkbox']),
   .form-control-wrapper,
   .input-password-wrapper {
     flex: 1;

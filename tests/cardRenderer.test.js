@@ -190,10 +190,10 @@ describe('cardRenderer', () => {
     it('doit afficher un message "Aucun anime trouvé." si la liste est vide', () => {
       renderAnimeCards([], container, 'titre')
       assert.strictEqual(container.children.length, 1)
-      assert.strictEqual(
-        container.querySelector('.no-results').textContent,
-        'Aucun anime trouvé.',
-      )
+      const emptyEl = container.querySelector('.no-results')
+      assert.strictEqual(emptyEl.textContent, 'Aucun anime trouvé.')
+      assert.strictEqual(emptyEl.getAttribute('role'), 'status')
+      assert.strictEqual(container.getAttribute('aria-busy'), 'false')
     })
   })
 
@@ -204,19 +204,23 @@ describe('cardRenderer', () => {
       assert.ok(errorEl)
       assert.strictEqual(errorEl.getAttribute('role'), 'alert')
       assert.strictEqual(errorEl.textContent, 'Erreur de test')
+      assert.strictEqual(container.getAttribute('aria-busy'), 'false')
     })
 
-    it('doit afficher un message de chargement', () => {
+    it('doit afficher un message de chargement avec aria-busy et role status', () => {
       renderLoadingMessage(container, 'Chargement...')
       const loadingEl = container.querySelector('.loading-state')
       assert.ok(loadingEl)
+      assert.strictEqual(loadingEl.getAttribute('role'), 'status')
       assert.strictEqual(loadingEl.textContent, 'Chargement...')
+      assert.strictEqual(container.getAttribute('aria-busy'), 'true')
     })
 
     it('doit vider le conteneur avec clearResults', () => {
       container.innerHTML = '<div>cartes</div>'
       clearResults(container)
       assert.strictEqual(container.innerHTML, '')
+      assert.strictEqual(container.getAttribute('aria-busy'), 'false')
     })
 
     it('doit réinitialiser le formulaire et vider le conteneur avec resetSearchUI', () => {

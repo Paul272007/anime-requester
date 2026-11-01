@@ -133,11 +133,13 @@ export function renderAnimeCards(results, container, searchType = 'titre') {
   if (!container) return []
 
   container.innerHTML = ''
+  container.setAttribute('aria-busy', 'false')
   const items = limitResults(results, searchType)
 
   if (items.length === 0) {
     const emptyMsg = document.createElement('p')
     emptyMsg.className = 'no-results'
+    emptyMsg.setAttribute('role', 'status')
     emptyMsg.textContent = 'Aucun anime trouvé.'
     container.appendChild(emptyMsg)
     return []
@@ -153,6 +155,7 @@ export function renderAnimeCards(results, container, searchType = 'titre') {
 export function renderErrorMessage(container, message) {
   if (!container) return
   container.innerHTML = ''
+  container.setAttribute('aria-busy', 'false')
   const errorEl = document.createElement('p')
   errorEl.className = 'error-message'
   errorEl.setAttribute('role', 'alert')
@@ -166,8 +169,10 @@ export function renderLoadingMessage(
 ) {
   if (!container) return
   container.innerHTML = ''
+  container.setAttribute('aria-busy', 'true')
   const loadingEl = document.createElement('p')
   loadingEl.className = 'loading-state'
+  loadingEl.setAttribute('role', 'status')
   loadingEl.textContent = message
   container.appendChild(loadingEl)
 }
@@ -175,6 +180,7 @@ export function renderLoadingMessage(
 export function clearResults(container) {
   if (container) {
     container.innerHTML = ''
+    container.setAttribute('aria-busy', 'false')
   }
 }
 
