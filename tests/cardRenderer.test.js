@@ -79,6 +79,11 @@ describe('cardRenderer', () => {
 
       const imgEl = card.querySelector('.anime-image')
       assert.strictEqual(imgEl.src, PLACEHOLDER_IMAGE)
+      assert.ok(
+        decodeURIComponent(PLACEHOLDER_IMAGE).includes(
+          'xmlns="http://www.w3.org/2000/svg"',
+        ),
+      )
 
       const synopsisEl = card.querySelector('.anime-synopsis')
       assert.ok(synopsisEl.textContent.includes('Aucun synopsis disponible.'))
@@ -91,6 +96,16 @@ describe('cardRenderer', () => {
 
       const episodesEl = card.querySelector('.anime-episodes')
       assert.ok(episodesEl.textContent.includes('Inconnu'))
+    })
+
+    it('doit remplacer une image invalide par PLACEHOLDER_IMAGE lors de l’événement error', () => {
+      const card = createAnimeCard({
+        title: 'Test',
+        image: 'https://example.com/broken.jpg',
+      })
+      const imgEl = card.querySelector('.anime-image')
+      imgEl.dispatchEvent(new dom.window.Event('error'))
+      assert.strictEqual(imgEl.src, PLACEHOLDER_IMAGE)
     })
   })
 

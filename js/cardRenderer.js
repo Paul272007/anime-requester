@@ -1,5 +1,5 @@
 export const PLACEHOLDER_IMAGE =
-  'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F200%22%20viewBox%3D%220%200%20200%20300%22%3E%3Crect%20fill%3D%22%232c3e50%22%20width%3D%22200%22%20height%3D%22300%22%2F%3E%3Ctext%20fill%3D%22%23ecf0f1%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%20text-anchor%3D%22middle%22%20x%3D%22100%22%20y%3D%22150%22%3EImage%20non%20disponible%3C%2Ftext%3E%3C%2Fsvg%3E'
+  'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20300%22%3E%3Crect%20fill%3D%22%232c3e50%22%20width%3D%22200%22%20height%3D%22300%22%2F%3E%3Ctext%20fill%3D%22%23ecf0f1%22%20font-family%3D%22sans-serif%22%20font-size%3D%2214%22%20text-anchor%3D%22middle%22%20x%3D%22100%22%20y%3D%22150%22%3EImage%20non%20disponible%3C%2Ftext%3E%3C%2Fsvg%3E'
 
 export function createAnimeCard(anime = {}) {
   const card = document.createElement('article')
@@ -14,13 +14,26 @@ export function createAnimeCard(anime = {}) {
   imageContainer.className = 'anime-image-container'
   const img = document.createElement('img')
   img.className = 'anime-image'
-  const rawImage = anime.image || anime.thumbnail || anime.thumb
+  const rawImage =
+    anime.image ||
+    anime.images?.jpg?.large_image_url ||
+    anime.images?.jpg?.image_url ||
+    anime.images?.webp?.large_image_url ||
+    anime.images?.webp?.image_url ||
+    anime.thumbnail ||
+    anime.thumb
   img.src = rawImage || PLACEHOLDER_IMAGE
   img.alt = anime.title ? `Affiche de ${anime.title}` : 'Affiche anime'
   img.loading = 'lazy'
-  img.addEventListener('error', () => {
-    img.src = PLACEHOLDER_IMAGE
-  })
+  img.addEventListener(
+    'error',
+    () => {
+      if (img.src !== PLACEHOLDER_IMAGE) {
+        img.src = PLACEHOLDER_IMAGE
+      }
+    },
+    { once: true },
+  )
   imageContainer.appendChild(img)
   card.appendChild(imageContainer)
 
@@ -41,7 +54,11 @@ export function createAnimeCard(anime = {}) {
   genresLabel.textContent = 'Genres : '
   const genresText = document.createElement('span')
   if (Array.isArray(anime.genres) && anime.genres.length > 0) {
-    genresText.textContent = anime.genres.join(', ')
+    const formattedGenres = anime.genres
+      .map((g) => (typeof g === 'object' && g !== null ? g.name : g))
+      .filter(Boolean)
+    genresText.textContent =
+      formattedGenres.length > 0 ? formattedGenres.join(', ') : 'N/A'
   } else if (
     typeof anime.genres === 'string' &&
     anime.genres.trim().length > 0

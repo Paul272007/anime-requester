@@ -56,7 +56,7 @@ export const AUTHOR_WORKS = {
   'osamu tezuka': ['Astro Boy', 'Black Jack', 'Dororo'],
   tezuka: ['Astro Boy', 'Black Jack', 'Dororo'],
   'naoki urasawa': ['Monster', 'Pluto', '20th Century Boys'],
-  urasawa: ['Monster', 'Pluto'],
+  urasawa: ['Monster', 'Pluto', '20th Century Boys'],
   clamp: ['Cardcaptor Sakura', 'Code Geass', 'Chobits'],
   'junji ito': ['Uzumaki', 'Junji Ito Collection'],
   'katsuhiro otomo': ['Akira'],
@@ -72,7 +72,7 @@ export const AUTHOR_WORKS = {
   'hideaki anno': ['Neon Genesis Evangelion', 'Evangelion'],
   anno: ['Neon Genesis Evangelion', 'Evangelion'],
   'satoshi kon': ['Perfect Blue', 'Paprika', 'Tokyo Godfathers'],
-  kon: ['Perfect Blue', 'Paprika'],
+  kon: ['Perfect Blue', 'Paprika', 'Tokyo Godfathers'],
   'shinichiro watanabe': ['Cowboy Bebop', 'Samurai Champloo'],
   watanabe: ['Cowboy Bebop', 'Samurai Champloo'],
   'mamoru hosoda': ['Toki wo Kakeru Shoujo', 'Summer Wars', 'Belle'],
@@ -83,8 +83,14 @@ export function getWorksByAuthor(authorInput) {
   if (!authorInput || typeof authorInput !== 'string') return null
 
   const cleaned = authorInput.toLowerCase().trim()
+  if (!cleaned) return null
+
   if (AUTHOR_WORKS[cleaned]) {
     return AUTHOR_WORKS[cleaned]
+  }
+
+  if (cleaned.length < 3) {
+    return null
   }
 
   for (const [authorKey, works] of Object.entries(AUTHOR_WORKS)) {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Un site pour rechercher des animes",
   "scripts": {
-    "dev": "echo \"Error: not specified\" && exit 1",
+    "dev": "npx serve .",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "node --test",
