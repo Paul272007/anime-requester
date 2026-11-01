@@ -26,6 +26,11 @@ describe('searchController', () => {
               <option value="annee">Recherche par année de sortie</option>
             </select>
             <input id="parametre" name="parametre" type="search" value="" />
+            <fieldset id="genre-fieldset">
+              <input type="checkbox" name="genres" value="Action" />
+              <input type="checkbox" name="genres" value="Adventure" />
+              <input type="checkbox" name="genres" value="Comedy" />
+            </fieldset>
             <button type="submit">Rechercher</button>
             <button type="reset">Effacer</button>
           </form>
@@ -66,6 +71,29 @@ describe('searchController', () => {
       })
       assert.strictEqual(response.results.length, 1)
       assert.strictEqual(response.results[0].title, 'Naruto')
+    })
+
+    it('doit transmettre les genres sélectionnés à searchAnimes', async () => {
+      let calledWith = null
+      const mockApi = {
+        searchAnimes: async (params) => {
+          calledWith = params
+          return { data: [{ title: 'Bleach', genres: ['Action'] }] }
+        },
+      }
+
+      const response = await handleSearch(
+        'Bleach',
+        ['Action', 'Adventure'],
+        'titre',
+        mockApi,
+      )
+      assert.strictEqual(response.success, true)
+      assert.deepStrictEqual(calledWith, {
+        search: 'Bleach',
+        genres: 'Action, Adventure',
+        size: 10,
+      })
     })
 
     it('doit appeler getAnimeById pour une recherche par identifiant', async () => {
@@ -128,6 +156,7 @@ describe('searchController', () => {
       assert.strictEqual(response.success, true)
       assert.deepStrictEqual(calledWith, {
         year: 2023,
+        genres: undefined,
         size: 10,
       })
       assert.strictEqual(response.results.length, 1)
@@ -205,6 +234,42 @@ describe('searchController', () => {
         cards[0].querySelector('.anime-title').textContent,
         'Hunter x Hunter',
       )
+    })
+
+    it('doit permettre la recherche avec les cases à cocher de genres sélectionnées', async () => {
+      let calledParams = null
+      const mockApi = {
+        searchAnimes: async (params) => {
+          calledParams = params
+          return {
+            data: [
+              {
+                title: 'Fullmetal Alchemist',
+                genres: ['Action', 'Adventure'],
+              },
+            ],
+          }
+        },
+      }
+
+      initFormEvents({
+        formSelector: '#search-form',
+        containerSelector: '#result-container',
+        api: mockApi,
+      })
+
+      const checkboxes = form.querySelectorAll('input[name="genres"]')
+      checkboxes[0].checked = true
+      checkboxes[1].checked = true
+
+      const submitEvent = new dom.window.Event('submit', { cancelable: true })
+      form.dispatchEvent(submitEvent)
+
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      assert.strictEqual(calledParams.genres, 'Action, Adventure')
+      const cards = container.querySelectorAll('.anime-card')
+      assert.strictEqual(cards.length, 1)
     })
 
     it('doit vider le conteneur lors du déclenchement de l’événement reset', () => {

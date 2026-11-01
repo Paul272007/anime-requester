@@ -5,6 +5,7 @@ import {
   getAnimeByRanking,
 } from './animeApi.js'
 import { setApiKey, clearApiKey } from './apiKeyStorage.js'
+import { initThemeToggle } from './themeStorage.js'
 import {
   renderAnimeCards,
   renderErrorMessage,
@@ -28,7 +29,11 @@ export async function handleSearch(
     search = searchTerm.search || searchTerm.term || ''
     genres = searchTerm.genres || ''
     type = searchTerm.type || 'titre'
-  } else if (typeof genresOrOptions === 'object' && genresOrOptions !== null) {
+  } else if (
+    typeof genresOrOptions === 'object' &&
+    genresOrOptions !== null &&
+    !Array.isArray(genresOrOptions)
+  ) {
     search = searchTerm || ''
     genres = genresOrOptions.genres || ''
     type = genresOrOptions.type || searchType || 'titre'
@@ -37,6 +42,13 @@ export async function handleSearch(
     genres = genresOrOptions || ''
     type = searchType || 'titre'
   }
+
+  const formattedGenres = Array.isArray(genres)
+    ? genres
+        .map((g) => String(g).trim())
+        .filter(Boolean)
+        .join(', ')
+    : String(genres || '').trim()
 
   const normalizedType = String(type).toLowerCase().trim()
   const searchFn = api.searchAnimes || searchAnimes
@@ -53,8 +65,11 @@ export async function handleSearch(
     ) {
       data = await getByRankingFn(search)
     } else if (normalizedType === 'genre') {
+      const combinedGenres = [String(search).trim(), formattedGenres]
+        .filter(Boolean)
+        .join(', ')
       data = await searchFn({
-        genres: search || genres,
+        genres: combinedGenres,
         size: 10,
       })
     } else if (normalizedType === 'auteur' || normalizedType === 'author') {
@@ -78,12 +93,13 @@ export async function handleSearch(
       }
       data = await searchFn({
         year: yearNumber,
+        genres: formattedGenres || undefined,
         size: 10,
       })
     } else {
       data = await searchFn({
         search,
-        genres,
+        genres: formattedGenres,
         size: 10,
       })
     }
@@ -117,6 +133,8 @@ export function initFormEvents({
 } = {}) {
   if (typeof document === 'undefined') return null
 
+  initThemeToggle('#theme-toggle')
+
   const form =
     document.querySelector(formSelector) || document.querySelector('form')
   const resultContainer =
@@ -142,6 +160,7 @@ export function initFormEvents({
       toggleApiKeyBtn.addEventListener('click', () => {
         const isPassword = apiKeyInput.type === 'password'
         apiKeyInput.type = isPassword ? 'text' : 'password'
+        toggleApiKeyBtn.setAttribute('aria-pressed', String(isPassword))
         toggleApiKeyBtn.setAttribute(
           'aria-label',
           isPassword ? 'Masquer la clé API' : 'Afficher la clé API',
@@ -175,10 +194,21 @@ export function initFormEvents({
       document.querySelector('#parametre') ||
       document.querySelector('input[type="search"]')
 
+    const checkedGenreInputs = form.querySelectorAll(
+      'input[name="genres"]:checked',
+    )
+    const selectedGenres = Array.from(checkedGenreInputs)
+      .map((checkbox) => checkbox.value.trim())
+      .filter(Boolean)
+      .join(', ')
+
     const searchType = typeSelect ? typeSelect.value : 'titre'
     const searchParam = paramInput ? paramInput.value.trim() : ''
+    const canSearchBySelectedGenres =
+      Boolean(selectedGenres) &&
+      (searchType === 'genre' || searchType === 'titre')
 
-    if (!searchParam) {
+    if (!searchParam && !canSearchBySelectedGenres) {
       if (resultContainer) {
         renderErrorMessage(
           resultContainer,
@@ -192,7 +222,12 @@ export function initFormEvents({
       renderLoadingMessage(resultContainer, 'Recherche en cours...')
     }
 
-    const response = await handleSearch(searchParam, '', searchType, api)
+    const response = await handleSearch(
+      searchParam,
+      selectedGenres,
+      searchType,
+      api,
+    )
 
     if (!resultContainer) return
 
